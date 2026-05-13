@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Planejamento do Casamento</title>
+  <style>
+    :root {
+      --bg: #fff8f5;
+      --bg2: #f7e9e4;
+      --card: rgba(255, 255, 255, .84);
+      --text: #34211d;
+      --muted: #7f6862;
+      --primary: #b86b77;
+      --primary-dark: #8f4f5d;
+      --soft: #f4d9de;
+      --gold: #d9a441;
+      --green: #4f8f6a;
+      --red: #b94b4b;
+      --border: rgba(120, 78, 70, .18);
+      --shadow: 0 18px 50px rgba(101, 54, 49, .12);
+      --radius: 22px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 0%, rgba(248, 217, 222, .9), transparent 35%),
+        radial-gradient(circle at 92% 8%, rgba(217, 164, 65, .22), transparent 30%),
+        linear-gradient(135deg, var(--bg), var(--bg2));
+    }
+
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    a { color: var(--primary-dark); font-weight: 800; }
+
+    .app {
+      width: min(1180px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 26px 0 60px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.35fr .75fr;
+      gap: 22px;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(255,248,245,.72));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--primary-dark);
+      background: var(--soft);
+      font-size: .86rem;
+      font-weight: 850;
+      letter-spacing: .02em;
+    }
+
+    h1 {
+      margin: 18px 0 8px;
+      font-size: clamp(2.2rem, 5vw, 4.4rem);
+      line-height: .96;
+      letter-spacing: -.07em;
+    }
+
+    .subtitle {
+      margin: 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 1.04rem;
+      line-height: 1.62;
+    }
+
+    .meta {
+      display: grid;
+      gap: 12px;
+      align-content: center;
+      padding: 20px;
+      border-radius: 26px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: .75rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 900;
+      letter-spacing: .08em;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(255,255,255,.88);
+      color: var(--text);
+      padding: 11px 12px;
+      outline: none;
+      transition: border .15s, box-shadow .15s, background .15s;
+    }
+
+    textarea { min-height: 94px; resize: vertical; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: rgba(184,107,119,.65);
+      box-shadow: 0 0 0 4px rgba(184,107,119,.12);
+      background: white;
+    }
+
+    .toolbar, .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .toolbar { margin-top: 20px; }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      color: white;
+      background: var(--primary);
+      box-shadow: 0 12px 24px rgba(184,107,119,.22);
+      font-weight: 900;
+      transition: transform .15s, box-shadow .15s, background .15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: var(--primary-dark);
+      box-shadow: 0 16px 30px rgba(184,107,119,.28);
+    }
+
+    .btn.secondary {
+      color: var(--primary-dark);
+      background: white;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .btn.danger { background: var(--red); }
+    .btn.small { padding: 8px 12px; font-size: .86rem; }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0 20px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.65);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 26px rgba(101,54,49,.06);
+    }
+
+    .tab {
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 900;
+    }
+
+    .tab.active {
+      color: white;
+      background: var(--primary);
+    }
+
+    .section { display: none; }
+    .section.active { display: block; animation: fadeUp .22s ease both; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .grid { display: grid; gap: 18px; }
+    .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+    }
+
+    .stat { min-height: 126px; display: grid; align-content: space-between; gap: 8px; }
+    .label-muted { color: var(--muted); font-weight: 800; font-size: .92rem; }
+    .value { font-size: 2.1rem; font-weight: 950; letter-spacing: -.05em; }
+
+    .progress {
+      width: 100%;
+      height: 11px;
+      border-radius: 999px;
+      background: rgba(184,107,119,.14);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--gold));
+      transition: width .25s;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin-bottom: 16px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      letter-spacing: -.04em;
+    }
+
+    .section-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr .8fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .list { display: grid; gap: 12px; }
+
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.72);
+      border: 1px solid var(--border);
+    }
+
+    .check {
+      width: 23px;
+      height: 23px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+    }
+
+    .item-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-weight: 950;
+      letter-spacing: -.02em;
+    }
+
+    .item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .notes {
+      margin-top: 8px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: .93rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: .75rem;
+      font-weight: 950;
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    .badge.green { color: var(--green); background: rgba(79,143,106,.1); }
+    .badge.red { color: var(--red); background: rgba(185,75,75,.1); }
+    .badge.gold { color: #9b6b2e; background: rgba(217,164,65,.14); }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,.58);
+    }
+
+    table {
+      width: 100%;
+      min-width: 830px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 13px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: .76rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      background: rgba(255,255,255,.72);
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .empty {
+      padding: 26px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.45);
+    }
+
+    .form-grid { display: grid; gap: 12px; }
+    .form-grid.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .form-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+    dialog {
+      width: min(760px, calc(100% - 28px));
+      border: 0;
+      border-radius: 26px;
+      padding: 0;
+      color: var(--text);
+      background: white;
+      box-shadow: 0 30px 90px rgba(51,33,29,.28);
+    }
+
+    dialog::backdrop {
+      background: rgba(51,33,29,.38);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal { padding: 22px; }
+    .modal-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .modal-head h3 { margin: 0; font-size: 1.3rem; }
+    .close {
+      border: 1px solid var(--border);
+      background: white;
+      border-radius: 999px;
+      width: 38px;
+      height: 38px;
+      font-weight: 950;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      padding: 13px 15px;
+      background: #33211d;
+      color: white;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity .2s, transform .2s;
+      z-index: 20;
+      font-weight: 900;
+    }
+
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .setup {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,.66);
+      border: 1px solid var(--border);
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: .9rem;
+      line-height: 1.5;
+    }
+
+    code {
+      padding: 2px 5px;
+      border-radius: 7px;
+      background: rgba(184,107,119,.1);
+    }
+
+    @media (max-width: 900px) {
+      .hero, .two-col { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filters, .form-grid.two, .form-grid.three { grid-template-columns: 1fr; }
+      .section-head { align-items: start; flex-direction: column; }
+      .tabs { border-radius: 22px; }
+    }
+
+    @media (max-width: 580px) {
+      .app { width: min(100% - 20px, 1180px); padding-top: 10px; }
+      .hero { padding: 20px; border-radius: 26px; }
+      .stats { grid-template-columns: 1fr; }
+      .item { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">♡ planejador de casamento</div>
+        <h1 id="heroTitle">Planejamento do Casamento</h1>
+        <p class="subtitle">
+          Um painel compartilhado para organizar tarefas, empresas em avaliação, fornecedores escolhidos,
+          convidados, cronograma e anotações. Os dados são salvos em uma planilha do Google via Google Apps Script.
+        </p>
+
+        <div class="setup">
+          <div class="form-grid two">
+            <div>
+              <label>Senha compartilhada</label>
+              <input id="passwordInput" type="password" placeholder="senha configurada no Apps Script" />
+            </div>
+            <div style="display:flex;align-items:end;gap:10px;flex-wrap:wrap;">
+              <button class="btn" onclick="connect()">Conectar</button>
+              <button class="btn secondary" onclick="saveConnection()">Salvar senha neste navegador</button>
+              <button class="btn secondary" onclick="loadFromSheet()">Atualizar</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button class="btn secondary" onclick="saveToSheet()">Salvar agora</button>
+          <button class="btn secondary" onclick="exportJson()">Backup JSON</button>
+          <button class="btn secondary" onclick="document.getElementById('importFile').click()">Importar backup</button>
+          <input id="importFile" hidden type="file" accept="application/json,.json" onchange="importJson(event)" />
+        </div>
+      </div>
+
+      <aside class="meta">
+        <div>
+          <label>Casal</label>
+          <input id="coupleInput" placeholder="João & Maria" onchange="updateMeta()" />
+        </div>
+        <div class="form-grid two">
+          <div>
+            <label>Data do casamento</label>
+            <input id="dateInput" type="date" onchange="updateMeta()" />
+          </div>
+          <div>
+            <label>Local / cidade</label>
+            <input id="venueInput" placeholder="Brasília, DF" onchange="updateMeta()" />
+          </div>
+        </div>
+        <div class="label-muted" id="syncStatus">Não conectado</div>
+      </aside>
+    </header>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <main>
+      <section id="dashboard" class="section active">
+        <div class="grid stats">
+          <div class="card stat">
+            <div class="label-muted">Progresso das tarefas</div>
+            <div class="value" id="statChecklist">0%</div>
+            <div class="progress"><span id="progressChecklist"></span></div>
+          </div>
+          <div class="card stat">
+            <div class="label-muted">Empresas cadastradas</div>
+            <div class="value" id="statCompanies">0</div>
+            <div class="label-muted" id="statCompanyDetails">0 escolhidas</div>
+          </div>
+          <div class="card stat">
+            <div class="label-muted">Convidados confirmados</div>
+            <div class="value" id="statGuests">0</div>
+            <div class="label-muted" id="statGuestDetails">0 pendentes</div>
+          </div>
+          <div class="card stat">
+            <div class="label-muted">Contagem regressiva</div>
+            <div class="value" id="statCountdown">—</div>
+            <div class="label-muted" id="statDate">Sem data definida</div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top:18px;">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Próximos prazos</h2>
+                <p>Tarefas abertas ordenadas por data.</p>
+              </div>
+            </div>
+            <div id="nextDeadlines" class="list"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Serviços ainda em decisão</h2>
+                <p>Serviços com empresas em avaliação, mas sem fornecedor escolhido.</p>
+              </div>
+            </div>
+            <div id="openChoices" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="checklist" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Checklist</h2>
+            <p>Acompanhe tarefas, prazos e vincule uma empresa quando vocês decidirem.</p>
+          </div>
+          <button class="btn" onclick="openModal('checklist')">Adicionar tarefa</button>
+        </div>
+
+        <div class="filters">
+          <input id="checklistSearch" placeholder="Buscar tarefa, categoria, observações..." oninput="render()" />
+          <select id="checklistCategoryFilter" onchange="render()"></select>
+          <select id="checklistStatusFilter" onchange="render()">
+            <option value="">Todos os status</option>
+            <option value="pendente">Pendente</option>
+            <option value="em andamento">Em andamento</option>
+            <option value="concluída">Concluída</option>
+          </select>
+        </div>
+
+        <div id="checklistList" class="list"></div>
+      </section>
+
+      <section id="companies" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Empresas</h2>
+            <p>Cadastre várias opções para cada serviço. Marque uma como escolhida quando fecharem.</p>
+          </div>
+          <button class="btn" onclick="openModal('company')">Adicionar empresa</button>
+        </div>
+        <div class="filters">
+          <input id="companySearch" placeholder="Buscar empresa, serviço, contato..." oninput="render()" />
+          <select id="companyServiceFilter" onchange="render()"></select>
+          <select id="companyStageFilter" onchange="render()">
+            <option value="">Todos os status</option>
+            <option value="avaliando">Avaliando</option>
+            <option value="escolhida">Escolhida</option>
+            <option value="descartada">Descartada</option>
+          </select>
+        </div>
+        <div id="companiesTable"></div>
+      </section>
+
+      <section id="guests" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Convidados</h2>
+            <p>Acompanhe confirmação, lado, grupo e quantidade de lugares.</p>
+          </div>
+          <button class="btn" onclick="openModal('guest')">Adicionar convidado</button>
+        </div>
+        <div id="guestsTable"></div>
+      </section>
+
+      <section id="timeline" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Cronograma</h2>
+            <p>Marcos importantes até o casamento.</p>
+          </div>
+          <button class="btn" onclick="openModal('timeline')">Adicionar marco</button>
+        </div>
+        <div id="timelineList" class="list"></div>
+      </section>
+
+      <section id="notes" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Anotações</h2>
+            <p>Espaço livre para ideias, links e pendências.</p>
+          </div>
+        </div>
+        <div class="card">
+          <label>Anotações gerais</label>
+          <textarea id="notesArea" oninput="updateNotes()" placeholder="Ideias, links, dúvidas, pendências..."></textarea>
+        </div>
+      </section>
+
+      <p class="footer-note">
+        O link do Apps Script já está embutido neste arquivo. A senha pode ser salva apenas no navegador.
+        Evite guardar dados sensíveis, documentos, CPF, endereços ou contratos completos.
+      </p>
+    </main>
+  </div>
+
+  <dialog id="modal">
+    <form method="dialog" class="modal" id="modalForm">
+      <div class="modal-head">
+        <h3 id="modalTitle">Adicionar item</h3>
+        <button class="close" type="button" onclick="closeModal()">×</button>
+      </div>
+      <div id="modalFields" class="form-grid"></div>
+      <div class="toolbar" style="margin-top:16px;">
+        <button class="btn" type="submit">Salvar</button>
+        <button class="btn secondary" type="button" onclick="closeModal()">Cancelar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const API_URL = "https://script.google.com/macros/s/AKfycbxOKkZ3emfIw3sW9jz16EQQvF5N2oFwkafEV_Dep4tnmbkBIkynOpTuEAb-SLOSuh1V/exec";
+
+    const initialData = {
+      meta: {
+        couple: "João & Maria",
+        weddingDate: "",
+        venue: "Brasília, DF"
+      },
+      checklist: [
+        { id: makeId(), category: "espaço", task: "Escolher e reservar o espaço", status: "pendente", deadline: "", linkedCompanyId: "", notes: "Ver capacidade, restrições de decoração, estacionamento e taxa de hora extra." },
+        { id: makeId(), category: "buffet", task: "Escolher buffet", status: "pendente", deadline: "", linkedCompanyId: "", notes: "Ver degustação, cardápio, opções para crianças e alimentação da equipe." },
+        { id: makeId(), category: "fotografia", task: "Escolher fotógrafo", status: "pendente", deadline: "", linkedCompanyId: "", notes: "Ver prazo de entrega, quantidade de fotos editadas, backup e contrato." },
+        { id: makeId(), category: "decoração", task: "Escolher decoração e flores", status: "pendente", deadline: "", linkedCompanyId: "", notes: "Separar cerimônia, festa, buquê e arranjos das mesas." }
+      ],
+      companies: [
+        { id: makeId(), service: "espaço", name: "Exemplo de espaço", contact: "", link: "", stage: "avaliando", notes: "Trocar por uma opção real." },
+        { id: makeId(), service: "fotografia", name: "Exemplo de fotógrafo", contact: "", link: "", stage: "avaliando", notes: "Adicionar Instagram, WhatsApp, pacote e observações." }
+      ],
+      guests: [
+        { id: makeId(), name: "Convidado exemplo", side: "ambos", group: "família", rsvp: "pendente", seats: 1, notes: "" }
+      ],
+      timeline: [
+        { id: makeId(), when: "12 meses antes", title: "Definir estimativa de convidados e serviços principais", date: "", notes: "" },
+        { id: makeId(), when: "10 meses antes", title: "Escolher espaço e buffet", date: "", notes: "" },
+        { id: makeId(), when: "8 meses antes", title: "Escolher foto, vídeo, música e decoração", date: "", notes: "" },
+        { id: makeId(), when: "3 meses antes", title: "Enviar convites e acompanhar confirmação", date: "", notes: "" },
+        { id: makeId(), when: "1 mês antes", title: "Confirmar convidados finais e detalhes com fornecedores", date: "", notes: "" }
+      ],
+      notes: ""
+    };
+
+    const LOCAL_KEY = "planejamento-casamento-sheets-v2";
+    const CONFIG_KEY = "planejamento-casamento-config-v2";
+
+    let data = loadLocal();
+    let config = loadConfig();
+    let activeTab = "dashboard";
+    let editing = { type: null, id: null };
+    let saveTimer = null;
+
+    const tabs = [
+      ["dashboard", "Painel"],
+      ["checklist", "Checklist"],
+      ["companies", "Empresas"],
+      ["guests", "Convidados"],
+      ["timeline", "Cronograma"],
+      ["notes", "Anotações"]
+    ];
+
+    function makeId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return "id-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    function loadLocal() {
+      try {
+        const saved = localStorage.getItem(LOCAL_KEY);
+        return saved ? mergeDefaults(JSON.parse(saved)) : structuredClone(initialData);
+      } catch {
+        return structuredClone(initialData);
+      }
+    }
+
+    function loadConfig() {
+      try {
+        return JSON.parse(localStorage.getItem(CONFIG_KEY) || "{}");
+      } catch {
+        return {};
+      }
+    }
+
+    function saveConnection() {
+      config.password = document.getElementById("passwordInput").value;
+      localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+      toast("Senha salva neste navegador");
+    }
+
+    function mergeDefaults(obj) {
+      return {
+        ...structuredClone(initialData),
+        ...obj,
+        meta: { ...initialData.meta, ...(obj.meta || {}) },
+        checklist: normalizeChecklist(obj.checklist || []),
+        companies: normalizeCompanies(obj.companies || obj.suppliers || []),
+        guests: normalizeGuests(obj.guests || []),
+        timeline: obj.timeline || [],
+        notes: obj.notes || ""
+      };
+    }
+
+    function normalizeChecklist(items) {
+      return items.map(i => ({
+        ...i,
+        status: translateStatus(i.status),
+        category: translateCategory(i.category),
+        task: translateTask(i.task)
+      }));
+    }
+
+    function normalizeCompanies(items) {
+      return items.map(i => ({
+        ...i,
+        service: translateCategory(i.service),
+        stage: translateStage(i.stage)
+      }));
+    }
+
+    function normalizeGuests(items) {
+      return items.map(i => ({
+        ...i,
+        side: translateSide(i.side),
+        rsvp: translateRsvp(i.rsvp)
+      }));
+    }
+
+    function translateStatus(v) {
+      return ({ "pending": "pendente", "in progress": "em andamento", "done": "concluída" })[v] || v || "pendente";
+    }
+
+    function translateStage(v) {
+      return ({ "considering": "avaliando", "chosen": "escolhida", "rejected": "descartada" })[v] || v || "avaliando";
+    }
+
+    function translateRsvp(v) {
+      return ({ "pending": "pendente", "confirmed": "confirmado", "declined": "recusado" })[v] || v || "pendente";
+    }
+
+    function translateSide(v) {
+      return ({ "bride": "noiva", "groom": "noivo", "both": "ambos" })[v] || v || "ambos";
+    }
+
+    function translateCategory(v) {
+      return ({
+        "venue": "espaço",
+        "photography": "fotografia",
+        "decoration": "decoração",
+        "music": "música",
+        "documents": "documentos"
+      })[v] || v || "";
+    }
+
+    function translateTask(v) {
+      return ({
+        "Choose and reserve the venue": "Escolher e reservar o espaço",
+        "Choose buffet / catering": "Escolher buffet",
+        "Choose photographer": "Escolher fotógrafo",
+        "Choose decoration and flowers": "Escolher decoração e flores"
+      })[v] || v || "";
+    }
+
+    function saveLocal() {
+      localStorage.setItem(LOCAL_KEY, JSON.stringify(data, null, 2));
+    }
+
+    function queueSave() {
+      saveLocal();
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveToSheet, 700);
+    }
+
+    function setStatus(text) {
+      document.getElementById("syncStatus").textContent = text;
+    }
+
+    function toast(message) {
+      const el = document.getElementById("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+    }
+
+    function connect() {
+      saveConnection();
+      loadFromSheet();
+    }
+
+    function getPassword() {
+      return document.getElementById("passwordInput").value || config.password || "";
+    }
+
+    function loadFromSheet() {
+      const password = getPassword();
+
+      if (!password) {
+        toast("Digite a senha primeiro");
+        return;
+      }
+
+      setStatus("Carregando da planilha...");
+
+      const callbackName = "weddingPlannerCallback_" + Date.now();
+      window[callbackName] = function(response) {
+        delete window[callbackName];
+        script.remove();
+
+        if (!response || !response.ok) {
+          setStatus("Falha ao carregar");
+          toast(response && response.error ? response.error : "Não foi possível carregar");
+          return;
+        }
+
+        data = mergeDefaults(response.data || initialData);
+        saveLocal();
+        render();
+        setStatus("Carregado da planilha");
+        toast("Dados carregados");
+      };
+
+      const script = document.createElement("script");
+      const url = new URL(API_URL);
+      url.searchParams.set("action", "load");
+      url.searchParams.set("password", password);
+      url.searchParams.set("callback", callbackName);
+      script.src = url.toString();
+      script.onerror = function() {
+        delete window[callbackName];
+        script.remove();
+        setStatus("Falha ao carregar");
+        toast("Não foi possível conectar");
+      };
+      document.body.appendChild(script);
+    }
+
+    async function saveToSheet() {
+      const password = getPassword();
+
+      if (!password) {
+        saveLocal();
+        setStatus("Salvo apenas localmente");
+        return;
+      }
+
+      saveLocal();
+      setStatus("Salvando na planilha...");
+
+      const body = new URLSearchParams();
+      body.set("password", password);
+      body.set("data", JSON.stringify(data));
+
+      try {
+        await fetch(API_URL, {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body
+        });
+
+        setStatus("Salvo na planilha");
+        toast("Salvo");
+      } catch (err) {
+        setStatus("Falha ao salvar; cópia local mantida");
+        toast("Não foi possível salvar online");
+      }
+    }
+
+    function render() {
+      saveLocal();
+
+      document.getElementById("passwordInput").value = config.password || "";
+
+      renderTabs();
+
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById(activeTab).classList.add("active");
+
+      document.getElementById("coupleInput").value = data.meta.couple || "";
+      document.getElementById("dateInput").value = data.meta.weddingDate || "";
+      document.getElementById("venueInput").value = data.meta.venue || "";
+      document.getElementById("notesArea").value = data.notes || "";
+      document.getElementById("heroTitle").textContent = data.meta.couple ? `Casamento de ${data.meta.couple}` : "Planejamento do Casamento";
+
+      renderDashboard();
+      renderChecklist();
+      renderCompanies();
+      renderGuests();
+      renderTimeline();
+    }
+
+    function renderTabs() {
+      document.getElementById("tabs").innerHTML = tabs.map(([id, label]) => `
+        <button class="tab ${activeTab === id ? "active" : ""}" onclick="setTab('${id}')">${label}</button>
+      `).join("");
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      render();
+    }
+
+    function updateMeta() {
+      data.meta.couple = document.getElementById("coupleInput").value;
+      data.meta.weddingDate = document.getElementById("dateInput").value;
+      data.meta.venue = document.getElementById("venueInput").value;
+      render();
+      queueSave();
+    }
+
+    function updateNotes() {
+      data.notes = document.getElementById("notesArea").value;
+      queueSave();
+    }
+
+    function renderDashboard() {
+      const total = data.checklist.length;
+      const done = data.checklist.filter(i => i.status === "concluída").length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+
+      document.getElementById("statChecklist").textContent = `${percent}%`;
+      document.getElementById("progressChecklist").style.width = `${percent}%`;
+
+      const chosen = data.companies.filter(c => c.stage === "escolhida").length;
+      const considering = data.companies.filter(c => c.stage === "avaliando").length;
+      document.getElementById("statCompanies").textContent = data.companies.length;
+      document.getElementById("statCompanyDetails").textContent = `${chosen} escolhidas, ${considering} em avaliação`;
+
+      const seats = data.guests.filter(g => g.rsvp === "confirmado").reduce((sum, g) => sum + Number(g.seats || 1), 0);
+      const pending = data.guests.filter(g => g.rsvp === "pendente").length;
+      document.getElementById("statGuests").textContent = seats;
+      document.getElementById("statGuestDetails").textContent = `${pending} pendentes`;
+
+      const days = daysUntil(data.meta.weddingDate);
+      document.getElementById("statCountdown").textContent = days == null ? "—" : days >= 0 ? `${days}` : "feito";
+      document.getElementById("statDate").textContent = data.meta.weddingDate ? `${dateLabel(data.meta.weddingDate)}${days != null && days >= 0 ? " dias restantes" : ""}` : "Sem data definida";
+
+      const deadlines = data.checklist
+        .filter(i => i.deadline && i.status !== "concluída")
+        .sort((a,b) => a.deadline.localeCompare(b.deadline))
+        .slice(0, 6);
+
+      document.getElementById("nextDeadlines").innerHTML = deadlines.length ? deadlines.map(i => {
+        const n = daysUntil(i.deadline);
+        const due = n === 0 ? "hoje" : n > 0 ? `em ${n} dias` : `${Math.abs(n)} dias atrasado`;
+        return `
+          <div class="item" style="grid-template-columns:1fr auto;">
+            <div>
+              <div class="item-title">${esc(i.task)} <span class="badge">${esc(i.category)}</span></div>
+              <div class="item-meta"><span>${dateLabel(i.deadline)}</span>${companyName(i.linkedCompanyId) ? `<span>${esc(companyName(i.linkedCompanyId))}</span>` : ""}</div>
+            </div>
+            <span class="badge ${n < 0 ? "red" : "gold"}">${due}</span>
+          </div>
+        `;
+      }).join("") : `<div class="empty">Nenhum prazo cadastrado.</div>`;
+
+      const services = [...new Set(data.companies.map(c => c.service).filter(Boolean))].sort();
+      const undecided = services
+        .filter(service => data.companies.some(c => c.service === service && c.stage === "avaliando") && !data.companies.some(c => c.service === service && c.stage === "escolhida"))
+        .map(service => ({
+          service,
+          count: data.companies.filter(c => c.service === service && c.stage === "avaliando").length
+        }));
+
+      document.getElementById("openChoices").innerHTML = undecided.length ? undecided.map(s => `
+        <div class="item" style="grid-template-columns:1fr auto;">
+          <div>
+            <div class="item-title">${esc(s.service)} <span class="badge gold">em decisão</span></div>
+            <div class="item-meta"><span>${s.count} empresas em avaliação</span></div>
+          </div>
+          <button class="btn secondary small" onclick="setTab('companies')">Abrir</button>
+        </div>
+      `).join("") : `<div class="empty">Nenhuma decisão aberta sobre empresas.</div>`;
+    }
+
+    function renderChecklist() {
+      const categories = [...new Set(data.checklist.map(i => i.category).filter(Boolean))].sort();
+      const categoryFilter = document.getElementById("checklistCategoryFilter");
+      const previous = categoryFilter.value;
+      categoryFilter.innerHTML = `<option value="">Todas as categorias</option>` + categories.map(c => `<option value="${attr(c)}">${esc(c)}</option>`).join("");
+      categoryFilter.value = previous;
+
+      const q = (document.getElementById("checklistSearch").value || "").toLowerCase();
+      const cat = categoryFilter.value;
+      const status = document.getElementById("checklistStatusFilter").value;
+
+      const items = data.checklist
+        .filter(i => !q || [i.task, i.category, i.notes, companyName(i.linkedCompanyId)].join(" ").toLowerCase().includes(q))
+        .filter(i => !cat || i.category === cat)
+        .filter(i => !status || i.status === status)
+        .sort((a,b) => (a.deadline || "9999").localeCompare(b.deadline || "9999"));
+
+      document.getElementById("checklistList").innerHTML = items.length ? items.map(i => `
+        <div class="item">
+          <input class="check" type="checkbox" ${i.status === "concluída" ? "checked" : ""} onchange="toggleChecklist('${i.id}')" />
+          <div>
+            <div class="item-title">
+              ${esc(i.task)}
+              <span class="badge ${i.status === "concluída" ? "green" : "gold"}">${esc(i.status)}</span>
+              <span class="badge">${esc(i.category || "geral")}</span>
+            </div>
+            <div class="item-meta">
+              ${i.deadline ? `<span>prazo: ${dateLabel(i.deadline)}</span>` : ""}
+              ${companyName(i.linkedCompanyId) ? `<span>empresa: ${esc(companyName(i.linkedCompanyId))}</span>` : ""}
+            </div>
+            ${i.notes ? `<div class="notes">${esc(i.notes)}</div>` : ""}
+          </div>
+          <div class="actions">
+            <button class="btn secondary small" onclick="openModal('checklist', '${i.id}')">Editar</button>
+            <button class="btn danger small" onclick="removeItem('checklist', '${i.id}')">Excluir</button>
+          </div>
+        </div>
+      `).join("") : `<div class="empty">Nenhuma tarefa encontrada.</div>`;
+    }
+
+    function renderCompanies() {
+      const serviceFilter = document.getElementById("companyServiceFilter");
+      const previous = serviceFilter.value;
+      const services = [...new Set(data.companies.map(c => c.service).filter(Boolean))].sort();
+      serviceFilter.innerHTML = `<option value="">Todos os serviços</option>` + services.map(s => `<option value="${attr(s)}">${esc(s)}</option>`).join("");
+      serviceFilter.value = previous;
+
+      const q = (document.getElementById("companySearch").value || "").toLowerCase();
+      const service = serviceFilter.value;
+      const stage = document.getElementById("companyStageFilter").value;
+
+      const rows = data.companies
+        .filter(c => !q || [c.name, c.service, c.contact, c.link, c.notes].join(" ").toLowerCase().includes(q))
+        .filter(c => !service || c.service === service)
+        .filter(c => !stage || c.stage === stage)
+        .sort((a,b) => (a.service || "").localeCompare(b.service || "") || (a.name || "").localeCompare(b.name || ""));
+
+      renderTable("companiesTable", rows, [
+        ["service", "Serviço"],
+        ["name", "Empresa"],
+        ["contact", "Contato"],
+        ["link", "Link"],
+        ["stage", "Status"],
+        ["notes", "Observações"]
+      ], "company");
+    }
+
+    function renderGuests() {
+      renderTable("guestsTable", data.guests, [
+        ["name", "Nome"],
+        ["side", "Lado"],
+        ["group", "Grupo"],
+        ["rsvp", "Confirmação"],
+        ["seats", "Lugares"],
+        ["notes", "Observações"]
+      ], "guest");
+    }
+
+    function renderTimeline() {
+      const items = [...data.timeline].sort((a,b) => (a.date || "9999").localeCompare(b.date || "9999"));
+      document.getElementById("timelineList").innerHTML = items.length ? items.map(i => `
+        <div class="item" style="grid-template-columns:1fr auto;">
+          <div>
+            <div class="item-title">${esc(i.title)} <span class="badge">${esc(i.when || "marco")}</span></div>
+            <div class="item-meta">${i.date ? `<span>${dateLabel(i.date)}</span>` : ""}</div>
+            ${i.notes ? `<div class="notes">${esc(i.notes)}</div>` : ""}
+          </div>
+          <div class="actions">
+            <button class="btn secondary small" onclick="openModal('timeline', '${i.id}')">Editar</button>
+            <button class="btn danger small" onclick="removeItem('timeline', '${i.id}')">Excluir</button>
+          </div>
+        </div>
+      `).join("") : `<div class="empty">Nenhum marco cadastrado.</div>`;
+    }
+
+    function renderTable(targetId, rows, columns, type) {
+      const target = document.getElementById(targetId);
+      if (!rows.length) {
+        target.innerHTML = `<div class="empty">Nenhum registro cadastrado.</div>`;
+        return;
+      }
+
+      target.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>${columns.map(c => `<th>${c[1]}</th>`).join("")}<th>Ações</th></tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  ${columns.map(([key]) => formatCell(key, row)).join("")}
+                  <td>
+                    <div class="actions">
+                      ${type === "company" && row.stage !== "escolhida" ? `<button class="btn small" onclick="chooseCompany('${row.id}')">Escolher</button>` : ""}
+                      <button class="btn secondary small" onclick="openModal('${type}', '${row.id}')">Editar</button>
+                      <button class="btn danger small" onclick="removeItem('${typePlural(type)}', '${row.id}')">Excluir</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function formatCell(key, row) {
+      let value = row[key] ?? "";
+      if (key === "link" && value) return `<td><a href="${attr(value)}" target="_blank" rel="noopener">abrir</a></td>`;
+      if (key === "stage" || key === "rsvp") {
+        const cls = value === "escolhida" || value === "confirmado" ? "green" : value === "descartada" || value === "recusado" ? "red" : "gold";
+        return `<td><span class="badge ${cls}">${esc(value)}</span></td>`;
+      }
+      return `<td>${esc(value)}</td>`;
+    }
+
+    function typePlural(type) {
+      if (type === "company") return "companies";
+      if (type === "guest") return "guests";
+      return type;
+    }
+
+    function toggleChecklist(id) {
+      const item = data.checklist.find(i => i.id === id);
+      if (!item) return;
+      item.status = item.status === "concluída" ? "pendente" : "concluída";
+      render();
+      queueSave();
+    }
+
+    function chooseCompany(id) {
+      const company = data.companies.find(c => c.id === id);
+      if (!company) return;
+
+      if (confirm(`Marcar "${company.name}" como empresa escolhida para ${company.service}?`)) {
+        company.stage = "escolhida";
+        render();
+        queueSave();
+      }
+    }
+
+    function removeItem(collection, id) {
+      if (!confirm("Excluir este item?")) return;
+      data[collection] = data[collection].filter(i => i.id !== id);
+
+      if (collection === "companies") {
+        data.checklist.forEach(item => {
+          if (item.linkedCompanyId === id) item.linkedCompanyId = "";
+        });
+      }
+
+      render();
+      queueSave();
+    }
+
+    function openModal(type, id = null) {
+      editing = { type, id };
+      const collection = typePlural(type);
+      const item = id ? data[collection].find(i => i.id === id) : {};
+      document.getElementById("modalTitle").textContent = `${id ? "Editar" : "Adicionar"} ${typeLabel(type)}`;
+      document.getElementById("modalFields").innerHTML = getFields(type, item || {});
+      document.getElementById("modalForm").onsubmit = saveModal;
+      document.getElementById("modal").showModal();
+    }
+
+    function typeLabel(type) {
+      return {
+        checklist: "tarefa",
+        company: "empresa",
+        guest: "convidado",
+        timeline: "marco"
+      }[type] || "item";
+    }
+
+    function closeModal() {
+      document.getElementById("modal").close();
+    }
+
+    function field(name, label, value, input = "text", options = []) {
+      value = value ?? "";
+      if (input === "textarea") {
+        return `<div><label>${label}</label><textarea name="${name}">${esc(value)}</textarea></div>`;
+      }
+      if (input === "select") {
+        return `<div><label>${label}</label><select name="${name}">
+          ${options.map(o => {
+            const val = typeof o === "object" ? o.value : o;
+            const text = typeof o === "object" ? o.text : o;
+            return `<option value="${attr(val)}" ${value === val ? "selected" : ""}>${esc(text)}</option>`;
+          }).join("")}
+        </select></div>`;
+      }
+      return `<div><label>${label}</label><input name="${name}" type="${input}" value="${attr(value)}" /></div>`;
+    }
+
+    function getFields(type, item) {
+      if (type === "checklist") {
+        const companyOptions = [{ value: "", text: "Nenhuma empresa selecionada" }, ...data.companies.map(c => ({
+          value: c.id,
+          text: `${c.service} — ${c.name} (${c.stage})`
+        }))];
+
+        return `
+          <div class="form-grid two">
+            ${field("category", "Categoria", item.category)}
+            ${field("status", "Status", item.status || "pendente", "select", ["pendente", "em andamento", "concluída"])}
+          </div>
+          ${field("task", "Tarefa", item.task)}
+          <div class="form-grid two">
+            ${field("deadline", "Prazo", item.deadline, "date")}
+            ${field("linkedCompanyId", "Empresa selecionada", item.linkedCompanyId, "select", companyOptions)}
+          </div>
+          ${field("notes", "Observações", item.notes, "textarea")}
+        `;
+      }
+
+      if (type === "company") {
+        return `
+          <div class="form-grid two">
+            ${field("service", "Serviço", item.service)}
+            ${field("name", "Nome da empresa", item.name)}
+          </div>
+          <div class="form-grid two">
+            ${field("contact", "Contato", item.contact)}
+            ${field("link", "Site / Instagram / link", item.link, "url")}
+          </div>
+          ${field("stage", "Status", item.stage || "avaliando", "select", ["avaliando", "escolhida", "descartada"])}
+          ${field("notes", "Observações", item.notes, "textarea")}
+        `;
+      }
+
+      if (type === "guest") {
+        return `
+          ${field("name", "Nome", item.name)}
+          <div class="form-grid three">
+            ${field("side", "Lado", item.side || "ambos", "select", ["noiva", "noivo", "ambos"])}
+            ${field("group", "Grupo", item.group)}
+            ${field("rsvp", "Confirmação", item.rsvp || "pendente", "select", ["pendente", "confirmado", "recusado"])}
+          </div>
+          ${field("seats", "Lugares", item.seats || 1, "number")}
+          ${field("notes", "Observações", item.notes, "textarea")}
+        `;
+      }
+
+      if (type === "timeline") {
+        return `
+          <div class="form-grid two">
+            ${field("when", "Quando", item.when)}
+            ${field("date", "Data", item.date, "date")}
+          </div>
+          ${field("title", "Título", item.title)}
+          ${field("notes", "Observações", item.notes, "textarea")}
+        `;
+      }
+    }
+
+    function saveModal(event) {
+      event.preventDefault();
+
+      const type = editing.type;
+      const collection = typePlural(type);
+      const obj = Object.fromEntries(new FormData(event.target).entries());
+
+      if ("seats" in obj) obj.seats = Number(obj.seats || 1);
+
+      if (editing.id) {
+        const idx = data[collection].findIndex(i => i.id === editing.id);
+        data[collection][idx] = { ...data[collection][idx], ...obj };
+      } else {
+        data[collection].push({ id: makeId(), ...obj });
+      }
+
+      closeModal();
+      render();
+      queueSave();
+    }
+
+    function companyName(id) {
+      if (!id) return "";
+      const c = data.companies.find(c => c.id === id);
+      return c ? c.name : "";
+    }
+
+    function dateLabel(value) {
+      if (!value) return "";
+      const [y,m,d] = value.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function daysUntil(value) {
+      if (!value) return null;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const target = new Date(value + "T00:00:00");
+      return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    }
+
+    function exportJson() {
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `backup-planejamento-casamento-${new Date().toISOString().slice(0,10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("Backup exportado");
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          data = mergeDefaults(JSON.parse(reader.result));
+          render();
+          queueSave();
+          toast("Backup importado");
+        } catch {
+          alert("JSON inválido.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    function esc(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function attr(value) {
+      return esc(value).replaceAll("`", "&#096;");
+    }
+
+    render();
+  </script>
+</body>
+</html>
