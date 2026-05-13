@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Planner</title>
+  <style>
+    :root {
+      --bg: #fff8f5;
+      --bg-2: #f8ebe6;
+      --card: rgba(255, 255, 255, 0.82);
+      --card-solid: #ffffff;
+      --text: #33211d;
+      --muted: #806b66;
+      --primary: #b86b77;
+      --primary-dark: #8f4f5d;
+      --primary-soft: #f4d9de;
+      --accent: #d9a441;
+      --danger: #b94b4b;
+      --success: #4f8f6a;
+      --warning: #b47b35;
+      --border: rgba(120, 78, 70, 0.18);
+      --shadow: 0 18px 50px rgba(101, 54, 49, 0.12);
+      --radius: 22px;
+      --radius-sm: 14px;
+      --font: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font);
+      color: var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(248, 217, 222, 0.85), transparent 34%),
+        radial-gradient(circle at 90% 10%, rgba(217, 164, 65, 0.22), transparent 30%),
+        linear-gradient(135deg, var(--bg), var(--bg-2));
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0 64px;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 24px;
+      align-items: stretch;
+      padding: 28px;
+      border: 1px solid var(--border);
+      border-radius: 32px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,248,245,0.72));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      top: -95px;
+      background: radial-gradient(circle, rgba(184,107,119,0.18), transparent 68%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 12px;
+      border-radius: 999px;
+      color: var(--primary-dark);
+      background: var(--primary-soft);
+      font-size: 0.86rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    h1 {
+      margin: 18px 0 8px;
+      font-size: clamp(2.25rem, 5vw, 4.6rem);
+      line-height: 0.96;
+      letter-spacing: -0.07em;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+
+    .wedding-meta {
+      display: grid;
+      gap: 12px;
+      align-content: center;
+      padding: 22px;
+      border-radius: 26px;
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      z-index: 1;
+    }
+
+    .meta-row {
+      display: grid;
+      gap: 7px;
+    }
+
+    label {
+      font-size: 0.77rem;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--text);
+      padding: 11px 12px;
+      outline: none;
+      transition: border 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    textarea {
+      min-height: 94px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: rgba(184,107,119,0.65);
+      box-shadow: 0 0 0 4px rgba(184,107,119,0.12);
+      background: #fff;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 22px 0 0;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 16px;
+      color: #fff;
+      background: var(--primary);
+      box-shadow: 0 12px 24px rgba(184, 107, 119, 0.22);
+      font-weight: 800;
+      transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      background: var(--primary-dark);
+      box-shadow: 0 16px 30px rgba(184, 107, 119, 0.28);
+    }
+
+    .btn.secondary {
+      color: var(--primary-dark);
+      background: #fff;
+      border: 1px solid var(--border);
+      box-shadow: none;
+    }
+
+    .btn.danger {
+      background: var(--danger);
+    }
+
+    .btn.small {
+      padding: 8px 12px;
+      font-size: 0.86rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 26px 0 20px;
+      padding: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.65);
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 26px rgba(101,54,49,0.06);
+    }
+
+    .tab {
+      border: 0;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: transparent;
+      color: var(--muted);
+      font-weight: 850;
+    }
+
+    .tab.active {
+      color: #fff;
+      background: var(--primary);
+    }
+
+    .grid {
+      display: grid;
+      gap: 18px;
+    }
+
+    .stats {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(12px);
+      padding: 20px;
+    }
+
+    .stat {
+      display: grid;
+      gap: 8px;
+      min-height: 128px;
+      align-content: space-between;
+    }
+
+    .stat .value {
+      font-size: 2.1rem;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+
+    .stat .label {
+      color: var(--muted);
+      font-weight: 750;
+      font-size: 0.92rem;
+    }
+
+    .progress {
+      width: 100%;
+      height: 11px;
+      border-radius: 999px;
+      background: rgba(184,107,119,0.14);
+      overflow: hidden;
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      transition: width 0.25s;
+    }
+
+    .section {
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+      animation: fadeUp 0.24s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: end;
+      margin: 0 0 16px;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: 1.55rem;
+      letter-spacing: -0.04em;
+    }
+
+    .section-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .filters {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.72);
+      border: 1px solid var(--border);
+    }
+
+    .check {
+      width: 23px;
+      height: 23px;
+      accent-color: var(--primary);
+      margin-top: 2px;
+    }
+
+    .item-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-weight: 900;
+      letter-spacing: -0.02em;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 900;
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      text-transform: lowercase;
+    }
+
+    .badge.done { color: var(--success); background: rgba(79,143,106,0.10); }
+    .badge.pending { color: var(--warning); background: rgba(180,123,53,0.10); }
+    .badge.closed { color: var(--success); background: rgba(79,143,106,0.10); }
+    .badge.signed { color: var(--success); background: rgba(79,143,106,0.10); }
+    .badge.no { color: var(--danger); background: rgba(185,75,75,0.10); }
+
+    .item-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .item-notes {
+      margin-top: 8px;
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.93rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .form-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .form-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      background: rgba(255,255,255,0.58);
+    }
+
+    table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 13px 14px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(255,255,255,0.72);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .empty {
+      padding: 26px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,0.45);
+    }
+
+    .note-box {
+      display: grid;
+      gap: 10px;
+    }
+
+    .footer-note {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 18px;
+      padding: 13px 15px;
+      background: #33211d;
+      color: #fff;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      transform: translateY(12px);
+      pointer-events: none;
+      transition: opacity 0.2s, transform 0.2s;
+      z-index: 20;
+      font-weight: 800;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    dialog {
+      width: min(720px, calc(100% - 28px));
+      border: 0;
+      border-radius: 26px;
+      padding: 0;
+      box-shadow: 0 30px 90px rgba(51,33,29,0.28);
+      background: var(--card-solid);
+      color: var(--text);
+    }
+
+    dialog::backdrop {
+      background: rgba(51,33,29,0.38);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal {
+      padding: 22px;
+    }
+
+    .modal-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .modal-head h3 {
+      margin: 0;
+      font-size: 1.3rem;
+    }
+
+    .close {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 999px;
+      width: 38px;
+      height: 38px;
+      font-weight: 900;
+    }
+
+    @media (max-width: 900px) {
+      .hero,
+      .two-col {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .filters,
+      .form-grid.two,
+      .form-grid.three {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .tabs {
+        border-radius: 22px;
+      }
+    }
+
+    @media (max-width: 580px) {
+      .app {
+        width: min(100% - 20px, 1220px);
+        padding-top: 10px;
+      }
+
+      .hero {
+        padding: 20px;
+        border-radius: 26px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .item {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        justify-content: flex-start;
+      }
+    }
+
+    @media print {
+      body { background: white; }
+      .toolbar, .tabs, .actions, .btn, dialog, .filters { display: none !important; }
+      .app { width: 100%; padding: 0; }
+      .hero, .card, .item, .table-wrap { box-shadow: none; background: white; }
+      .section { display: block !important; page-break-inside: avoid; margin-top: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="hero">
+      <div>
+        <div class="eyebrow">♡ wedding planner</div>
+        <h1 id="heroTitle">Wedding Planning</h1>
+        <p class="subtitle">
+          A simple GitHub Pages-friendly planner for checklist items, suppliers, budget, guests, timeline, and notes.
+          Your edits are saved locally in this browser, and you can export the JSON state to commit it back to GitHub.
+        </p>
+
+        <div class="toolbar">
+          <button class="btn" onclick="exportJson()">Export JSON</button>
+          <button class="btn secondary" onclick="document.getElementById('importFile').click()">Import JSON</button>
+          <button class="btn secondary" onclick="copyJson()">Copy JSON</button>
+          <button class="btn secondary" onclick="window.print()">Print</button>
+          <button class="btn danger" onclick="resetAll()">Reset local data</button>
+          <input id="importFile" class="hidden" type="file" accept="application/json,.json" onchange="importJson(event)" />
+        </div>
+      </div>
+
+      <aside class="wedding-meta">
+        <div class="meta-row">
+          <label>Couple</label>
+          <input id="coupleInput" placeholder="João & ..." onchange="updateMeta()" />
+        </div>
+        <div class="form-grid two">
+          <div class="meta-row">
+            <label>Wedding date</label>
+            <input id="dateInput" type="date" onchange="updateMeta()" />
+          </div>
+          <div class="meta-row">
+            <label>Target budget</label>
+            <input id="budgetInput" type="number" min="0" step="100" onchange="updateMeta()" />
+          </div>
+        </div>
+        <div class="meta-row">
+          <label>Venue / city</label>
+          <input id="venueInput" placeholder="Brasília, DF" onchange="updateMeta()" />
+        </div>
+      </aside>
+    </header>
+
+    <nav class="tabs" id="tabs"></nav>
+
+    <main>
+      <section id="dashboard" class="section active">
+        <div class="grid stats">
+          <div class="card stat">
+            <div class="label">Checklist progress</div>
+            <div class="value" id="statChecklist">0%</div>
+            <div class="progress"><span id="progressChecklist"></span></div>
+          </div>
+          <div class="card stat">
+            <div class="label">Budget used</div>
+            <div class="value" id="statBudget">R$ 0</div>
+            <div class="progress"><span id="progressBudget"></span></div>
+          </div>
+          <div class="card stat">
+            <div class="label">Already paid</div>
+            <div class="value" id="statPaid">R$ 0</div>
+            <div class="label" id="statRemaining">remaining: R$ 0</div>
+          </div>
+          <div class="card stat">
+            <div class="label">Confirmed guests</div>
+            <div class="value" id="statGuests">0</div>
+            <div class="label" id="statGuestDetails">0 pending RSVP</div>
+          </div>
+        </div>
+
+        <div class="two-col" style="margin-top: 18px;">
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Next deadlines</h2>
+                <p>Tasks and payments ordered by date.</p>
+              </div>
+            </div>
+            <div id="nextDeadlines" class="list"></div>
+          </div>
+
+          <div class="card">
+            <div class="section-head">
+              <div>
+                <h2>Open decisions</h2>
+                <p>Checklist items that are not done yet.</p>
+              </div>
+            </div>
+            <div id="openDecisions" class="list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="checklist" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Checklist</h2>
+            <p>Track what needs to be done, deadlines, professionals, and notes.</p>
+          </div>
+          <button class="btn" onclick="openModal('checklist')">Add checklist item</button>
+        </div>
+
+        <div class="filters">
+          <input id="checklistSearch" placeholder="Search task, professional, category..." oninput="render()" />
+          <select id="checklistCategoryFilter" onchange="render()"></select>
+          <select id="checklistStatusFilter" onchange="render()">
+            <option value="">All statuses</option>
+            <option value="pending">Pending</option>
+            <option value="in progress">In progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+
+        <div id="checklistList" class="list"></div>
+      </section>
+
+      <section id="suppliers" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Suppliers</h2>
+            <p>Keep track of professionals, contacts, values, and contract status.</p>
+          </div>
+          <button class="btn" onclick="openModal('supplier')">Add supplier</button>
+        </div>
+        <div id="suppliersTable"></div>
+      </section>
+
+      <section id="budget" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Budget</h2>
+            <p>Compare estimated values, real values, paid amounts, and payment deadlines.</p>
+          </div>
+          <button class="btn" onclick="openModal('budget')">Add budget item</button>
+        </div>
+        <div id="budgetTable"></div>
+      </section>
+
+      <section id="guests" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Guests</h2>
+            <p>Track RSVP, sides, groups, and number of seats.</p>
+          </div>
+          <button class="btn" onclick="openModal('guest')">Add guest</button>
+        </div>
+        <div id="guestsTable"></div>
+      </section>
+
+      <section id="timeline" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Timeline</h2>
+            <p>Milestones for the months before the wedding.</p>
+          </div>
+          <button class="btn" onclick="openModal('timeline')">Add milestone</button>
+        </div>
+        <div id="timelineList" class="list"></div>
+      </section>
+
+      <section id="notes" class="section">
+        <div class="section-head">
+          <div>
+            <h2>Notes</h2>
+            <p>Use this as a quick planning scratchpad.</p>
+          </div>
+        </div>
+        <div class="card note-box">
+          <label>General notes</label>
+          <textarea id="notesArea" oninput="updateNotes()" placeholder="Ideas, references, links, pending questions..."></textarea>
+        </div>
+      </section>
+
+      <p class="footer-note">
+        Tip: to make GitHub your source of truth, click <strong>Export JSON</strong>, copy the exported content into the
+        <code>initialData</code> variable inside this file, commit, and push. The app will still autosave locally while you edit.
+      </p>
+    </main>
+  </div>
+
+  <dialog id="modal">
+    <form method="dialog" class="modal" id="modalForm">
+      <div class="modal-head">
+        <h3 id="modalTitle">Add item</h3>
+        <button class="close" type="button" onclick="closeModal()">×</button>
+      </div>
+      <div id="modalFields" class="form-grid"></div>
+      <div class="toolbar" style="margin-top: 16px;">
+        <button class="btn" type="submit">Save</button>
+        <button class="btn secondary" type="button" onclick="closeModal()">Cancel</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const initialData = {
+      meta: {
+        couple: "João & Partner",
+        weddingDate: "",
+        targetBudget: 40000,
+        venue: "Brasília, DF"
+      },
+      checklist: [
+        { id: cryptoId(), category: "venue", task: "Choose and reserve the venue", status: "pending", deadline: "", professional: "", notes: "Ask about capacity, decoration restrictions, parking, and overtime fees." },
+        { id: cryptoId(), category: "buffet", task: "Close buffet / catering", status: "pending", deadline: "", professional: "", notes: "Check tasting date, menu options, and children/vendor meals." },
+        { id: cryptoId(), category: "photography", task: "Close photographer", status: "pending", deadline: "", professional: "", notes: "Ask about delivery time, number of edited photos, backup, and contract." },
+        { id: cryptoId(), category: "decoration", task: "Define decoration and flowers", status: "pending", deadline: "", professional: "", notes: "Separate ceremony, reception, bouquet, and table arrangements." },
+        { id: cryptoId(), category: "music", task: "Choose DJ or band", status: "pending", deadline: "", professional: "", notes: "Confirm ceremony sound, party sound, and playlist restrictions." },
+        { id: cryptoId(), category: "documents", task: "Check civil wedding documents", status: "pending", deadline: "", professional: "", notes: "Confirm registry office deadlines." }
+      ],
+      suppliers: [
+        { id: cryptoId(), name: "Example Supplier", service: "Venue", contact: "", link: "", price: 0, paid: 0, contract: "no", notes: "Replace this with a real supplier." }
+      ],
+      budget: [
+        { id: cryptoId(), category: "Venue", item: "Venue reservation", estimated: 10000, actual: 0, paid: 0, dueDate: "", notes: "" },
+        { id: cryptoId(), category: "Buffet", item: "Dinner / catering", estimated: 14000, actual: 0, paid: 0, dueDate: "", notes: "" },
+        { id: cryptoId(), category: "Photo", item: "Photography package", estimated: 5000, actual: 0, paid: 0, dueDate: "", notes: "" }
+      ],
+      guests: [
+        { id: cryptoId(), name: "Example Guest", side: "both", group: "family", rsvp: "pending", seats: 1, notes: "" }
+      ],
+      timeline: [
+        { id: cryptoId(), when: "12 months before", title: "Define budget and guest estimate", date: "", notes: "" },
+        { id: cryptoId(), when: "10 months before", title: "Close venue and buffet", date: "", notes: "" },
+        { id: cryptoId(), when: "8 months before", title: "Close photo, video, music, and decoration", date: "", notes: "" },
+        { id: cryptoId(), when: "3 months before", title: "Send invitations and collect RSVP", date: "", notes: "" },
+        { id: cryptoId(), when: "1 month before", title: "Confirm final guest count and supplier details", date: "", notes: "" }
+      ],
+      notes: ""
+    };
+
+    const STORAGE_KEY = "wedding-planner-data-v1";
+
+    let data = loadData();
+    let activeTab = "dashboard";
+    let editing = { type: null, id: null };
+
+    const tabs = [
+      ["dashboard", "Dashboard"],
+      ["checklist", "Checklist"],
+      ["suppliers", "Suppliers"],
+      ["budget", "Budget"],
+      ["guests", "Guests"],
+      ["timeline", "Timeline"],
+      ["notes", "Notes"]
+    ];
+
+    function cryptoId() {
+      if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+      return "id-" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+    }
+
+    function loadData() {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (!saved) return structuredClone(initialData);
+      try {
+        const parsed = JSON.parse(saved);
+        return mergeDefaults(parsed);
+      } catch {
+        return structuredClone(initialData);
+      }
+    }
+
+    function mergeDefaults(obj) {
+      return {
+        ...structuredClone(initialData),
+        ...obj,
+        meta: { ...initialData.meta, ...(obj.meta || {}) },
+        checklist: obj.checklist || [],
+        suppliers: obj.suppliers || [],
+        budget: obj.budget || [],
+        guests: obj.guests || [],
+        timeline: obj.timeline || [],
+        notes: obj.notes || ""
+      };
+    }
+
+    function save() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(data, null, 2));
+    }
+
+    function toast(message) {
+      const el = document.getElementById("toast");
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => el.classList.remove("show"), 1800);
+    }
+
+    function money(value) {
+      return Number(value || 0).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    }
+
+    function dateLabel(value) {
+      if (!value) return "";
+      const [y, m, d] = value.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function daysUntil(date) {
+      if (!date) return null;
+      const today = new Date();
+      today.setHours(0,0,0,0);
+      const target = new Date(date + "T00:00:00");
+      return Math.ceil((target - today) / (1000 * 60 * 60 * 24));
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      render();
+    }
+
+    function initTabs() {
+      document.getElementById("tabs").innerHTML = tabs.map(([id, label]) => `
+        <button class="tab ${activeTab === id ? "active" : ""}" onclick="setTab('${id}')">${label}</button>
+      `).join("");
+    }
+
+    function render() {
+      save();
+      initTabs();
+
+      document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+      document.getElementById(activeTab).classList.add("active");
+
+      document.getElementById("coupleInput").value = data.meta.couple || "";
+      document.getElementById("dateInput").value = data.meta.weddingDate || "";
+      document.getElementById("budgetInput").value = data.meta.targetBudget || 0;
+      document.getElementById("venueInput").value = data.meta.venue || "";
+      document.getElementById("notesArea").value = data.notes || "";
+
+      const title = data.meta.couple ? `${data.meta.couple}'s Wedding` : "Wedding Planning";
+      document.getElementById("heroTitle").textContent = title;
+
+      renderDashboard();
+      renderChecklist();
+      renderSuppliers();
+      renderBudget();
+      renderGuests();
+      renderTimeline();
+    }
+
+    function renderDashboard() {
+      const total = data.checklist.length;
+      const done = data.checklist.filter(i => i.status === "done").length;
+      const percent = total ? Math.round((done / total) * 100) : 0;
+
+      const estimatedTotal = data.budget.reduce((sum, i) => sum + Number(i.estimated || 0), 0);
+      const actualTotal = data.budget.reduce((sum, i) => sum + Number(i.actual || i.estimated || 0), 0);
+      const paidTotal = data.budget.reduce((sum, i) => sum + Number(i.paid || 0), 0);
+      const remaining = Math.max(actualTotal - paidTotal, 0);
+      const target = Number(data.meta.targetBudget || 0);
+      const budgetPercent = target ? Math.min(100, Math.round((actualTotal / target) * 100)) : 0;
+
+      const confirmedSeats = data.guests.filter(g => g.rsvp === "confirmed").reduce((sum, g) => sum + Number(g.seats || 1), 0);
+      const pending = data.guests.filter(g => g.rsvp === "pending").length;
+
+      document.getElementById("statChecklist").textContent = `${percent}%`;
+      document.getElementById("progressChecklist").style.width = `${percent}%`;
+      document.getElementById("statBudget").textContent = money(actualTotal || estimatedTotal);
+      document.getElementById("progressBudget").style.width = `${budgetPercent}%`;
+      document.getElementById("statPaid").textContent = money(paidTotal);
+      document.getElementById("statRemaining").textContent = `remaining: ${money(remaining)}`;
+      document.getElementById("statGuests").textContent = confirmedSeats;
+      document.getElementById("statGuestDetails").textContent = `${pending} pending RSVP`;
+
+      const deadlines = [
+        ...data.checklist.filter(i => i.deadline && i.status !== "done").map(i => ({
+          kind: "task",
+          title: i.task,
+          date: i.deadline,
+          meta: i.category
+        })),
+        ...data.budget.filter(i => i.dueDate && Number(i.actual || i.estimated || 0) > Number(i.paid || 0)).map(i => ({
+          kind: "payment",
+          title: i.item,
+          date: i.dueDate,
+          meta: money(Number(i.actual || i.estimated || 0) - Number(i.paid || 0))
+        }))
+      ].sort((a,b) => a.date.localeCompare(b.date)).slice(0, 6);
+
+      document.getElementById("nextDeadlines").innerHTML = deadlines.length ? deadlines.map(d => {
+        const n = daysUntil(d.date);
+        const due = n === 0 ? "today" : n > 0 ? `in ${n} days` : `${Math.abs(n)} days late`;
+        return `
+          <div class="item" style="grid-template-columns: 1fr auto;">
+            <div>
+              <div class="item-title">${escapeHtml(d.title)} <span class="badge">${d.kind}</span></div>
+              <div class="item-meta"><span>${dateLabel(d.date)}</span><span>${escapeHtml(d.meta || "")}</span></div>
+            </div>
+            <span class="badge ${n < 0 ? "no" : "pending"}">${due}</span>
+          </div>
+        `;
+      }).join("") : `<div class="empty">No deadlines yet.</div>`;
+
+      const open = data.checklist.filter(i => i.status !== "done").slice(0, 6);
+      document.getElementById("openDecisions").innerHTML = open.length ? open.map(i => `
+        <div class="item" style="grid-template-columns: 1fr;">
+          <div>
+            <div class="item-title">${escapeHtml(i.task)} <span class="badge pending">${escapeHtml(i.status)}</span></div>
+            <div class="item-meta"><span>${escapeHtml(i.category)}</span>${i.professional ? `<span>${escapeHtml(i.professional)}</span>` : ""}</div>
+          </div>
+        </div>
+      `).join("") : `<div class="empty">Everything is done. Nice.</div>`;
+    }
+
+    function renderChecklist() {
+      const categories = [...new Set(data.checklist.map(i => i.category).filter(Boolean))].sort();
+      const categoryFilter = document.getElementById("checklistCategoryFilter");
+      const previous = categoryFilter.value;
+      categoryFilter.innerHTML = `<option value="">All categories</option>` + categories.map(c => `<option value="${escapeAttr(c)}">${escapeHtml(c)}</option>`).join("");
+      categoryFilter.value = previous;
+
+      const q = (document.getElementById("checklistSearch").value || "").toLowerCase();
+      const cat = categoryFilter.value;
+      const status = document.getElementById("checklistStatusFilter").value;
+
+      const items = data.checklist
+        .filter(i => !q || [i.task, i.category, i.professional, i.notes].join(" ").toLowerCase().includes(q))
+        .filter(i => !cat || i.category === cat)
+        .filter(i => !status || i.status === status)
+        .sort((a,b) => (a.deadline || "9999").localeCompare(b.deadline || "9999"));
+
+      document.getElementById("checklistList").innerHTML = items.length ? items.map(i => `
+        <div class="item">
+          <input class="check" type="checkbox" ${i.status === "done" ? "checked" : ""} onchange="toggleChecklist('${i.id}')" />
+          <div>
+            <div class="item-title">
+              ${escapeHtml(i.task)}
+              <span class="badge ${i.status === "done" ? "done" : "pending"}">${escapeHtml(i.status)}</span>
+              <span class="badge">${escapeHtml(i.category || "general")}</span>
+            </div>
+            <div class="item-meta">
+              ${i.deadline ? `<span>deadline: ${dateLabel(i.deadline)}</span>` : ""}
+              ${i.professional ? `<span>professional: ${escapeHtml(i.professional)}</span>` : ""}
+            </div>
+            ${i.notes ? `<div class="item-notes">${escapeHtml(i.notes)}</div>` : ""}
+          </div>
+          <div class="actions">
+            <button class="btn secondary small" onclick="openModal('checklist', '${i.id}')">Edit</button>
+            <button class="btn danger small" onclick="removeItem('checklist', '${i.id}')">Delete</button>
+          </div>
+        </div>
+      `).join("") : `<div class="empty">No checklist items found.</div>`;
+    }
+
+    function renderSuppliers() {
+      renderTable("suppliersTable", data.suppliers, [
+        ["service", "Service"],
+        ["name", "Name"],
+        ["contact", "Contact"],
+        ["link", "Link"],
+        ["price", "Price", money],
+        ["paid", "Paid", money],
+        ["contract", "Contract"],
+        ["notes", "Notes"]
+      ], "supplier");
+    }
+
+    function renderBudget() {
+      renderTable("budgetTable", data.budget, [
+        ["category", "Category"],
+        ["item", "Item"],
+        ["estimated", "Estimated", money],
+        ["actual", "Actual", money],
+        ["paid", "Paid", money],
+        ["dueDate", "Due date", dateLabel],
+        ["notes", "Notes"]
+      ], "budget");
+    }
+
+    function renderGuests() {
+      renderTable("guestsTable", data.guests, [
+        ["name", "Name"],
+        ["side", "Side"],
+        ["group", "Group"],
+        ["rsvp", "RSVP"],
+        ["seats", "Seats"],
+        ["notes", "Notes"]
+      ], "guest");
+    }
+
+    function renderTimeline() {
+      const items = [...data.timeline].sort((a,b) => (a.date || "9999").localeCompare(b.date || "9999"));
+      document.getElementById("timelineList").innerHTML = items.length ? items.map(i => `
+        <div class="item" style="grid-template-columns: 1fr auto;">
+          <div>
+            <div class="item-title">${escapeHtml(i.title)} <span class="badge">${escapeHtml(i.when || "milestone")}</span></div>
+            <div class="item-meta">${i.date ? `<span>${dateLabel(i.date)}</span>` : ""}</div>
+            ${i.notes ? `<div class="item-notes">${escapeHtml(i.notes)}</div>` : ""}
+          </div>
+          <div class="actions">
+            <button class="btn secondary small" onclick="openModal('timeline', '${i.id}')">Edit</button>
+            <button class="btn danger small" onclick="removeItem('timeline', '${i.id}')">Delete</button>
+          </div>
+        </div>
+      `).join("") : `<div class="empty">No milestones yet.</div>`;
+    }
+
+    function renderTable(targetId, rows, columns, type) {
+      const target = document.getElementById(targetId);
+      if (!rows.length) {
+        target.innerHTML = `<div class="empty">No records yet.</div>`;
+        return;
+      }
+
+      target.innerHTML = `
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                ${columns.map(c => `<th>${c[1]}</th>`).join("")}
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(row => `
+                <tr>
+                  ${columns.map(([key, , format]) => {
+                    const value = format ? format(row[key]) : row[key];
+                    if (key === "link" && row[key]) {
+                      return `<td><a href="${escapeAttr(row[key])}" target="_blank" rel="noopener">open</a></td>`;
+                    }
+                    if (key === "contract" || key === "rsvp") {
+                      return `<td><span class="badge ${row[key] === "yes" || row[key] === "confirmed" ? "signed" : row[key] === "no" || row[key] === "declined" ? "no" : "pending"}">${escapeHtml(value || "")}</span></td>`;
+                    }
+                    return `<td>${escapeHtml(value ?? "")}</td>`;
+                  }).join("")}
+                  <td>
+                    <div class="actions">
+                      <button class="btn secondary small" onclick="openModal('${type}', '${row.id}')">Edit</button>
+                      <button class="btn danger small" onclick="removeItem('${collectionForType(type)}', '${row.id}')">Delete</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      `;
+    }
+
+    function collectionForType(type) {
+      if (type === "supplier") return "suppliers";
+      if (type === "guest") return "guests";
+      return type;
+    }
+
+    function updateMeta() {
+      data.meta.couple = document.getElementById("coupleInput").value;
+      data.meta.weddingDate = document.getElementById("dateInput").value;
+      data.meta.targetBudget = Number(document.getElementById("budgetInput").value || 0);
+      data.meta.venue = document.getElementById("venueInput").value;
+      render();
+      toast("Saved");
+    }
+
+    function updateNotes() {
+      data.notes = document.getElementById("notesArea").value;
+      save();
+    }
+
+    function toggleChecklist(id) {
+      const item = data.checklist.find(i => i.id === id);
+      if (!item) return;
+      item.status = item.status === "done" ? "pending" : "done";
+      render();
+      toast("Checklist updated");
+    }
+
+    function removeItem(collection, id) {
+      if (!confirm("Delete this item?")) return;
+      data[collection] = data[collection].filter(i => i.id !== id);
+      render();
+      toast("Deleted");
+    }
+
+    function openModal(type, id = null) {
+      editing = { type, id };
+      const modal = document.getElementById("modal");
+      const fields = document.getElementById("modalFields");
+      const title = document.getElementById("modalTitle");
+
+      const collection = collectionForType(type);
+      const item = id ? data[collection].find(i => i.id === id) : null;
+      title.textContent = `${id ? "Edit" : "Add"} ${type}`;
+
+      fields.innerHTML = getFields(type, item || {});
+      document.getElementById("modalForm").onsubmit = saveModal;
+      modal.showModal();
+    }
+
+    function closeModal() {
+      document.getElementById("modal").close();
+    }
+
+    function getFields(type, item) {
+      const f = (name, label, input = "text", options = []) => {
+        const value = item[name] ?? "";
+        if (input === "textarea") {
+          return `<div class="meta-row"><label>${label}</label><textarea name="${name}">${escapeHtml(value)}</textarea></div>`;
+        }
+        if (input === "select") {
+          return `<div class="meta-row"><label>${label}</label><select name="${name}">
+            ${options.map(o => `<option value="${escapeAttr(o)}" ${value === o ? "selected" : ""}>${escapeHtml(o)}</option>`).join("")}
+          </select></div>`;
+        }
+        return `<div class="meta-row"><label>${label}</label><input name="${name}" type="${input}" value="${escapeAttr(value)}" /></div>`;
+      };
+
+      if (type === "checklist") {
+        return `
+          <div class="form-grid two">
+            ${f("category", "Category")}
+            ${f("status", "Status", "select", ["pending", "in progress", "done"])}
+          </div>
+          ${f("task", "Task")}
+          <div class="form-grid two">
+            ${f("deadline", "Deadline", "date")}
+            ${f("professional", "Professional / supplier")}
+          </div>
+          ${f("notes", "Notes", "textarea")}
+        `;
+      }
+
+      if (type === "supplier") {
+        return `
+          <div class="form-grid two">
+            ${f("service", "Service")}
+            ${f("name", "Name")}
+          </div>
+          <div class="form-grid two">
+            ${f("contact", "Contact")}
+            ${f("link", "Website / Instagram / link", "url")}
+          </div>
+          <div class="form-grid three">
+            ${f("price", "Price", "number")}
+            ${f("paid", "Paid", "number")}
+            ${f("contract", "Contract signed?", "select", ["no", "yes"])}
+          </div>
+          ${f("notes", "Notes", "textarea")}
+        `;
+      }
+
+      if (type === "budget") {
+        return `
+          <div class="form-grid two">
+            ${f("category", "Category")}
+            ${f("item", "Item")}
+          </div>
+          <div class="form-grid three">
+            ${f("estimated", "Estimated", "number")}
+            ${f("actual", "Actual", "number")}
+            ${f("paid", "Paid", "number")}
+          </div>
+          ${f("dueDate", "Due date", "date")}
+          ${f("notes", "Notes", "textarea")}
+        `;
+      }
+
+      if (type === "guest") {
+        return `
+          ${f("name", "Name")}
+          <div class="form-grid three">
+            ${f("side", "Side", "select", ["bride", "groom", "both"])}
+            ${f("group", "Group")}
+            ${f("rsvp", "RSVP", "select", ["pending", "confirmed", "declined"])}
+          </div>
+          ${f("seats", "Seats", "number")}
+          ${f("notes", "Notes", "textarea")}
+        `;
+      }
+
+      if (type === "timeline") {
+        return `
+          <div class="form-grid two">
+            ${f("when", "When")}
+            ${f("date", "Date", "date")}
+          </div>
+          ${f("title", "Title")}
+          ${f("notes", "Notes", "textarea")}
+        `;
+      }
+    }
+
+    function saveModal(event) {
+      event.preventDefault();
+      const form = new FormData(event.target);
+      const type = editing.type;
+      const collection = collectionForType(type);
+      const obj = Object.fromEntries(form.entries());
+
+      for (const key of ["price", "paid", "estimated", "actual", "seats"]) {
+        if (key in obj) obj[key] = Number(obj[key] || 0);
+      }
+
+      if (editing.id) {
+        const idx = data[collection].findIndex(i => i.id === editing.id);
+        data[collection][idx] = { ...data[collection][idx], ...obj };
+      } else {
+        data[collection].push({ id: cryptoId(), ...obj });
+      }
+
+      closeModal();
+      render();
+      toast("Saved");
+    }
+
+    function exportJson() {
+      const payload = JSON.stringify(data, null, 2);
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const date = new Date().toISOString().slice(0,10);
+      a.href = url;
+      a.download = `wedding-planner-${date}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast("JSON exported");
+    }
+
+    async function copyJson() {
+      await navigator.clipboard.writeText(JSON.stringify(data, null, 2));
+      toast("JSON copied");
+    }
+
+    function importJson(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        try {
+          data = mergeDefaults(JSON.parse(reader.result));
+          save();
+          render();
+          toast("JSON imported");
+        } catch {
+          alert("Invalid JSON file.");
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = "";
+    }
+
+    function resetAll() {
+      if (!confirm("This clears only your browser autosave and restores the initial data in this file. Continue?")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      data = structuredClone(initialData);
+      render();
+      toast("Local data reset");
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function escapeAttr(value) {
+      return escapeHtml(value).replaceAll("`", "&#096;");
+    }
+
+    render();
+  </script>
+</body>
+</html>
