@@ -689,6 +689,7 @@
 
     const LOCAL_KEY = "wedding-planner-sheets-v1";
     const CONFIG_KEY = "wedding-planner-sheets-config-v1";
+    const DEFAULT_API_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
 
     let data = loadLocal();
     let config = loadConfig();
@@ -775,7 +776,7 @@
     }
 
     function getApiUrl() {
-      return (document.getElementById("apiUrlInput").value || config.apiUrl || "").trim();
+      return DEFAULT_API_URL || (document.getElementById("apiUrlInput").value || config.apiUrl || "").trim();
     }
 
     function getPassword() {
